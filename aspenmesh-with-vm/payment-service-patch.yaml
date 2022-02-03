@@ -1,0 +1,20 @@
+---
+spec:
+  template:
+    spec:
+      containers:
+      - name: payment-service
+        env:
+        - name: SPRING_RABBITMQ_HOST
+          value: "rabbitmq.vm.svc"
+        - name: SPRING_RABBITMQ_PORT
+          value: "5672"
+        - name: SPRING_RABBITMQ_USERNAME
+          value: "admin"
+        - name: SPRING_RABBITMQ_PASSWORD
+          value: "password"
+        - name: SPRING_RABBITMQ_SSL_ENABLED
+          value: "false"
+        - name: SPRING_RABBITMQ_SSL_VALIDATE_SERVER_CERTIFICATE
+          value: "false"
+

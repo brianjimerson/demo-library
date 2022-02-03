@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: stripe
+  namespace: ecommerce
+spec:
+  hosts:
+  - api.stripe.com
+  ports:
+  - number: 443
+    name: tls
+    protocol: TLS
+  resolution: DNS

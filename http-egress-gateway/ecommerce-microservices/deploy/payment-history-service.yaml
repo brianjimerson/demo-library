@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-history-service
+  namespace: ecommerce
+  labels:
+    app: payment-history-service
+    service: payment-history-service
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: payment-history-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-history-service
+  namespace: ecommerce
+  labels:
+    app: payment-history-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-history-service
+  template:
+    metadata:
+      labels:
+        app: payment-history-service
+    spec:
+      containers:
+      - name: payment-history-service
+        image: docker.io/bjimerson/payment-history-service
+        ports:
+        - containerPort: 8080

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  namespace: vm
+  labels:
+    app: rabbitmq
+    service: rabbitmq
+spec:
+  ports:
+  - port: 5672
+    name: tcp-rabbit
+  selector:
+    app: rabbitmq
+

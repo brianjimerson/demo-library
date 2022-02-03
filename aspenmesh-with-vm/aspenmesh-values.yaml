@@ -1,0 +1,12 @@
+aspen-mesh-controlplane:
+  clusterId: cluster1
+  userAuth:
+    type: none
+# Set automated workload entry creation
+pilot:
+  env:
+    PILOT_ENABLE_WORKLOAD_ENTRY_AUTOREGISTRATION: true
+    PILOT_ENABLE_WORKLOAD_ENTRY_HEALTHCHECKS: true
+meshConfig:
+  defaultConfig:
+    proxyMetadata: {}

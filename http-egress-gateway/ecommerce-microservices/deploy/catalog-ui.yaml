@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-ui
+  namespace: ecommerce
+  labels:
+    app: catalog-ui
+    service: catalog-ui
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: catalog-ui
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-ui
+  namespace: ecommerce
+  labels:
+    app: catalog-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalog-ui
+  template:
+    metadata:
+      labels:
+        app: catalog-ui
+    spec:
+      containers:
+      - name: catalog-ui
+        image: docker.io/bjimerson/catalog-ui
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+ 

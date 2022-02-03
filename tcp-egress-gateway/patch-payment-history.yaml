@@ -1,0 +1,26 @@
+---
+spec:
+  template:
+    spec:
+      containers:
+      - name: payment-history
+        env:
+        - name: SPRING_RABBITMQ_HOST
+          value: "ip-192-168-75-212.us-east-2.compute.internal"
+        - name: SPRING_RABBITMQ_PORT
+          # Non-secure connection
+          # value: "5672"
+          # Secure connection
+          value: "5671"
+        - name: SPRING_RABBITMQ_USERNAME
+          value: "admin"
+        - name: SPRING_RABBITMQ_PASSWORD
+          value: "password"
+        - name: SPRING_RABBITMQ_SSL_ENABLED
+          # Non-secure connection
+          # value: "false"
+          # Secure connection
+          value: "true"
+        - name: SPRING_RABBITMQ_SSL_VALIDATE_SERVER_CERTIFICATE
+          value: "false"
+

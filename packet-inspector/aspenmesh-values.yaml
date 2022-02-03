@@ -1,0 +1,13 @@
+aspen-mesh-controlplane:
+  clusterId: cluster1
+  userAuth:
+    type: none
+global:
+  certificateCustomFields: true
+citadel:
+  enabled: true
+aspen-mesh-packet-inspector:
+  enabled: true
+  analysis:
+    address: aspen-mesh-analysis-emulator.analysis-emulator:21000
+

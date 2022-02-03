@@ -1,0 +1,79 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: rabbitmq-egressgateway
+  namespace: ecommerce
+spec:
+  selector:
+    istio: egressgateway
+  servers:
+  - port:
+      number: 5671
+      name: rabbitmq-tls
+      protocol: TLS
+    hosts:
+    - ip-172-20-42-195.us-east-2.compute.internal
+    tls:
+      mode: ISTIO_MUTUAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: egressgateway-for-rabbitmq
+  namespace: ecommerce
+spec:
+  host: istio-egressgateway.istio-system.svc.cluster.local
+  subsets:
+  - name: rabbitmq
+    trafficPolicy:
+      tls:
+        mode: ISTIO_MUTUAL
+        sni: ip-172-20-42-195.us-east-2.compute.internal
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: direct-rabbitmq-through-egress-gateway
+  namespace: ecommerce
+spec:
+  hosts:
+  - ip-172-20-42-195.us-east-2.compute.internal
+  gateways:
+  - mesh
+  - rabbitmq-egressgateway
+  tcp:
+  - match:
+    - gateways:
+      - mesh
+      port: 5671
+    route:
+    - destination:
+        host: istio-egressgateway.istio-system.svc.cluster.local
+        subset: rabbitmq
+        port:
+          number: 5671
+  - match:
+    - gateways:
+      - rabbitmq-egressgateway
+      port: 5671
+    route:
+    - destination:
+        host: ip-172-20-42-195.us-east-2.compute.internal
+        port:
+          number: 5671
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: rabbitmq
+  namespace: ecommerce
+spec:
+  hosts:
+  - ip-172-20-42-195.us-east-2.compute.internal
+  ports:
+  - number: 5671
+    name: rabbitmq-tls
+    protocol: TCP
+  resolution: DNS
+  location: MESH_EXTERNAL
+

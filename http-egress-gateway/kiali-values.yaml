@@ -1,0 +1,12 @@
+apiVersion: kiali.io/v1alpha1
+kind: Kiali
+metadata:
+  name: kiali
+  annotations:
+    ansible.sdk.operatorframework.io/verbosity: "1"
+spec:
+  external_services:
+    prometheus:
+      url: "http://aspen-mesh-metrics-collector.istio-system.svc.cluster.local:19090"
+  auth:
+    strategy: anonymous

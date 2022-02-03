@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Catalog</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="icon" href="images/favicon-64.png" />
+    <link rel="stylesheet" href="/css/application.css" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+        <a class="navbar-brand" href="http://www.aspenmesh.io">Aspen Mesh</a>
+        <div class="collapse navbar-collapse" id="ecommerceNavbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/catalog">Catalog <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="text-center py-5">
+            <img class="d-block mx-auto mb-4" src="/images/aspenmesh.png" width="100" />
+            <h2>Catalog</h2>
+            <p class="lead">The following items are available to order.&nbsp;&nbsp;Click on an item's name to view
+                details and to order.</p>
+        </div>
+        <table class="table table-hover table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">In Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item: ${catalogItems}">
+                    <td><img th:src="${item.imageSource}" width="48" /></td>
+                    <td><a th:href="@{/itemDetails?id={id}(id=${item.id})}"><span th:text="${item.name}" /></a></td>
+                    <td th:text="${#numbers.formatCurrency(item.amount)}"/>
+                    <td th:utext="${item.inStock} ? '&check;' : '&nbsp;'"/>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="/js/jquery-3.5.1.slim.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

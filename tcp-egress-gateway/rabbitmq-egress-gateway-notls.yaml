@@ -1,0 +1,79 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: istio-egressgateway
+  namespace: ecommerce
+spec:
+  selector:
+    istio: egressgateway
+  servers:
+  - port:
+      number: 5672
+      name: tls
+      protocol: TLS
+    tls:
+      mode: ISTIO_MUTUAL
+    hosts:
+    - ec2-18-190-160-133.us-east-2.compute.amazonaws.com
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: egressgateway-for-rabbitmq
+  namespace: ecommerce
+spec:
+  host: istio-egressgateway.istio-system.svc.cluster.local
+  subsets:
+  - name: rabbitmq
+    trafficPolicy:
+      tls:
+        mode: ISTIO_MUTUAL
+        sni: ec2-18-190-160-133.us-east-2.compute.amazonaws.com
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: direct-rabbitmq-through-egress-gateway
+  namespace: ecommerce
+spec:
+  hosts:
+  - ec2-18-190-160-133.us-east-2.compute.amazonaws.com
+  gateways:
+  - mesh
+  - istio-egressgateway
+  tcp:
+  - match:
+    - gateways:
+      - mesh
+      port: 5672
+    route:
+    - destination:
+        host: istio-egressgateway.istio-system.svc.cluster.local
+        subset: rabbitmq
+        port:
+          number: 5672
+  - match:
+    - gateways:
+      - istio-egressgateway
+      port: 5672
+    route:
+    - destination:
+        host: ec2-18-190-160-133.us-east-2.compute.amazonaws.com
+        port:
+          number: 5672
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: rabbitmq
+  namespace: ecommerce
+spec:
+  hosts:
+  - ec2-18-190-160-133.us-east-2.compute.amazonaws.com
+  ports:
+  - number: 5672
+    name: tcp
+    protocol: TCP
+  resolution: DNS
+  location: MESH_EXTERNAL
+

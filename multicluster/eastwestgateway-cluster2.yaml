@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  annotations:
+    meta.helm.sh/release-name: istio-eastwestgateway
+    meta.helm.sh/release-namespace: istio-system
+  labels:
+    app: istio-eastwestgateway
+    app.kubernetes.io/managed-by: Helm
+    install.operator.istio.io/owning-resource: unknown
+    istio: eastwestgateway
+    istio.io/rev: default
+    operator.istio.io/component: IngressGateways
+    release: istio-eastwestgateway
+    topology.istio.io/network: network2
+  name: istio-multicluster-ingressgateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: eastwestgateway
+  servers:
+  - hosts:
+    - '*.local'
+    port:
+      name: tls
+      number: 15443
+      protocol: TLS
+    tls:
+      mode: AUTO_PASSTHROUGH

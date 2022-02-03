@@ -1,0 +1,26 @@
+aspen-mesh-controlplane:
+  clusterId: cluster1
+  userAuth:
+    type: none
+meshConfig:
+  outboundTrafficPolicy:
+    mode: REGISTRY_ONLY
+gateways:
+  istio-egressgateway:
+    replicaCount: 1
+    autoscaleEnabled: false
+    autoscaleMin: 1
+    autoscaleMax: 1
+    ports: 
+    - port: 80 
+      targetPort: 8080 
+      name: http2 
+      protocol: TCP 
+    - port: 443 
+      name: https 
+      targetPort: 8443 
+      protocol: TCP 
+    - port: 15443 
+      targetPort: 15443 
+      name: tls 
+      protocol: TCP 

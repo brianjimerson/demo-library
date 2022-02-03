@@ -1,0 +1,18 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-payment-sa-to-rabbitmq
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      app: istio-egressgateway
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/ecommerce/sa/payment-sa"]
+    when:
+    - key: connection.sni
+      values:
+      - "ip-172-20-42-195.us-east-2.compute.internal"

@@ -1,0 +1,14 @@
+aspen-mesh-controlplane:
+  clusterId: kongCluster
+  userAuth:
+    type: none
+global:
+  tracer:
+    zipkin:
+      address: aspen-mesh-jaeger-collector.istio-system:9411
+  certificateCustomFields: true
+jaeger:
+  enabled: true
+meshConfig:
+  accessLogFile: /dev/stdout
+

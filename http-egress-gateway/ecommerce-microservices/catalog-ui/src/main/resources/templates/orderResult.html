@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Order result</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="icon" href="images/favicon-64.png" />
+    <link rel="stylesheet" href="/css/application.css" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+        <a class="navbar-brand" href="http://www.aspenmesh.io">Aspen Mesh</a>
+        <div class="collapse navbar-collapse" id="ecommerceNavbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/catalog">Catalog</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="text-center py-5">
+            <img class="d-block mx-auto mb-4" src="/images/aspenmesh.png" width="100" />
+            <h2>Result</h2>
+        </div>
+        <div class="row text-center">
+            <div class="col-8" th:text="'Order status: ' + ${result}">
+        </div>
+    </div>
+
+    <script src="/js/jquery-3.5.1.slim.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

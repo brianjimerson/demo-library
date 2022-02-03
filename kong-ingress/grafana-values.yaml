@@ -1,0 +1,24 @@
+adminUser: admin
+adminPassword: admin
+
+downloadDashboards:
+  env: {}
+  envFromSecret: ""
+  resources: {}
+
+service:
+  enabled: true
+  type: LoadBalancer
+  port: 80
+  targetPort: 3000
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://aspen-mesh-metrics-collector.istio-system.svc.cluster.local:19090
+        access: proxy
+        isDefault: true
+

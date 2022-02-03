@@ -1,0 +1,13 @@
+.DS_Store
+*kubeconfig.yaml*
+*.pem
+*.swp
+*.lock
+target/
+bin/
+.settings/
+.classpath
+.mvn/
+.project
+.vscode/
+certs/

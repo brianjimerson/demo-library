@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: vm
+  labels:
+    app: web
+    service: web
+spec:
+  ports:
+  - port: 80
+    name: http-web
+  selector:
+    app: web
+

@@ -1,0 +1,64 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: istio-egressgateway
+  namespace: ecommerce
+spec:
+  selector:
+    istio: egressgateway
+  servers:
+  - port:
+      number: 443
+      name: tls
+      protocol: TLS
+    hosts:
+    - api.stripe.com
+    tls:
+      mode: PASSTHROUGH
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: egressgateway-for-stripe
+  namespace: ecommerce
+spec:
+  host: istio-egressgateway.istio-system.svc.cluster.local
+  subsets:
+  - name: stripe
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: direct-stripe-through-egress-gateway
+  namespace: ecommerce
+spec:
+  hosts:
+  - api.stripe.com
+  gateways:
+  - mesh
+  - istio-egressgateway
+  tls:
+  - match:
+    - gateways:
+      - mesh
+      port: 443
+      sniHosts:
+      - api.stripe.com
+    route:
+    - destination:
+        host: istio-egressgateway.istio-system.svc.cluster.local
+        subset: stripe
+        port:
+          number: 443
+  - match:
+    - gateways:
+      - istio-egressgateway
+      port: 443
+      sniHosts:
+      - api.stripe.com
+    route:
+    - destination:
+        host: api.stripe.com
+        port:
+          number: 443
+      weight: 100

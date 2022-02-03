@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-service
+  namespace: ecommerce
+  labels:
+    app: catalog-service
+    service: catalog-service
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: catalog-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-service
+  namespace: ecommerce
+  labels:
+    app: catalog-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalog-service
+  template:
+    metadata:
+      labels:
+        app: catalog-service
+    spec:
+      containers:
+      - name: catalog-service
+        image: docker.io/bjimerson/catalog-service
+        ports:
+        - containerPort: 8080
