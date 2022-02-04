@@ -274,6 +274,14 @@ If you view the logs in the `payment-history` pod, you should see a successful c
 2021-07-15 15:55:46.047  INFO 1 --- [    container-5] o.s.a.r.c.CachingConnectionFactory       : Created new connection: rabbitConnectionFactory#1be59f28:9/SimpleConnection@46c27a8f [delegate=amqp://admin@172.20.58.9:5671/, localPort= 42908]
 ``` 
 
+And if you view the egress gateway logs, you should see a connection to your RabbitMQ host:
+
+```
+kubectl logs -l istio=egressgateway -n istio-system
+
+[2022-02-03T22:19:39.685Z] "- - -" 0 - - - "-" 1809 3176 231855 - "-" "-" "-" "-" "192.168.75.212:5671" outbound|5671||ip-192-168-75-212.us-east-2.compute.internal 192.168.69.172:49262 192.168.69.172:5671 192.168.15.225:57994 ip-192-168-75-212.us-east-2.compute.internal -
+```
+
 Finally, apply the egress gateway for the Stripe API:
 
 ```

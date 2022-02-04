@@ -15,4 +15,5 @@ spec:
     when:
     - key: connection.sni
       values:
-      - "ip-172-20-42-195.us-east-2.compute.internal"
+      - "ip-192-168-75-212.us-east-2.compute.internal"
+      - "api.stripe.com"

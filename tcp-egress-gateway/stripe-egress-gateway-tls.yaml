@@ -14,7 +14,7 @@ spec:
     hosts:
     - api.stripe.com
     tls:
-      mode: PASSTHROUGH
+      mode: ISTIO_MUTUAL
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
@@ -25,6 +25,10 @@ spec:
   host: istio-egressgateway.istio-system.svc.cluster.local
   subsets:
   - name: stripe
+    trafficPolicy:
+      tls:
+        mode: ISTIO_MUTUAL
+        sni: ip-192-168-75-212.us-east-2.compute.internal
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -37,13 +41,13 @@ spec:
   gateways:
   - mesh
   - stripe-egressgateway
-  tls:
+  http:
   - match:
     - gateways:
       - mesh
       port: 443
-      sniHosts:
-      - api.stripe.com
+      #sniHosts:
+      #- api.stripe.com
     route:
     - destination:
         host: istio-egressgateway.istio-system.svc.cluster.local
@@ -54,8 +58,8 @@ spec:
     - gateways:
       - stripe-egressgateway
       port: 443
-      sniHosts:
-      - api.stripe.com
+      #sniHosts:
+      #- api.stripe.com
     route:
     - destination:
         host: api.stripe.com
@@ -75,5 +79,3 @@ spec:
     name: https
     protocol: HTTPS
   resolution: DNS
-  location: MESH_EXTERNAL
-

@@ -11,8 +11,8 @@ spec:
   rules:
   - from:
     - source:
-        principals: ["cluster.local/ns/ecommerce/sa/payment-sa"]
-    when:
-    - key: connection.sni
-      values:
-      - "api.stripe.com"
+        namespaces: ["ecommerce"]
+    to:
+    - operation:
+        hosts: ["api.stripe.com"]
+
