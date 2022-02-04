@@ -1,7 +1,7 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: allow-payment-sa-to-stripe
+  name: allow-payment-sa-to-rabbitmq
   namespace: istio-system
 spec:
   selector:
@@ -11,8 +11,10 @@ spec:
   rules:
   - from:
     - source:
+        principals: ["cluster.local/ns/ecommerce/sa/payment-sa"]
         namespaces: ["ecommerce"]
-    to:
-    - operation:
-        hosts: ["api.stripe.com"]
-
+    when:
+    - key: connection.sni
+      values:
+      - "ip-192-168-75-212.us-east-2.compute.internal"
+      - "api.stripe.com"
