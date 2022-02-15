@@ -34,7 +34,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: direct-stripe-through-egress-gateway
-  namespace: ecommerce
+  namespace: catalog-demo
 spec:
   hosts:
   - api.stripe.com
@@ -46,8 +46,6 @@ spec:
     - gateways:
       - mesh
       port: 443
-      #sniHosts:
-      #- api.stripe.com
     route:
     - destination:
         host: istio-egressgateway.istio-system.svc.cluster.local
@@ -58,8 +56,6 @@ spec:
     - gateways:
       - stripe-egressgateway
       port: 443
-      #sniHosts:
-      #- api.stripe.com
     route:
     - destination:
         host: api.stripe.com
@@ -70,7 +66,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
   name: stripe
-  namespace: ecommerce
+  namespace: catalog-demo
 spec:
   hosts:
   - api.stripe.com

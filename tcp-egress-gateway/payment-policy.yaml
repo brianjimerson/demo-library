@@ -1,7 +1,7 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: allow-payment-sa-to-rabbitmq
+  name: allow-rabbitmq-stripe
   namespace: istio-system
 spec:
   selector:
@@ -11,8 +11,8 @@ spec:
   rules:
   - from:
     - source:
-        principals: ["cluster.local/ns/ecommerce/sa/payment-sa"]
-        namespaces: ["ecommerce"]
+        principals: ["cluster.local/ns/catalog-demo/sa/payment"]
+        namespaces: ["catalog-demo"]
     when:
     - key: connection.sni
       values:

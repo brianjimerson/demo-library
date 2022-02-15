@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This repository demonstrates how use the Aspen Mesh Egress Gateway for TCP and TCP/TLS traffic to external services.  This demonstration uses an external RabbitMQ server as the message bus for the [`ecommerce-microservices`](https://github.com/brijimerson/ecommerce-microservices)  application.  Both non-secure TCP and secure TCP egress scenarios are demonstrated.
+This repository demonstrates how use the Aspen Mesh Egress Gateway for TCP and TCP/TLS traffic to external services.  This demonstration uses an external RabbitMQ server as the message bus for the [`catalog-demo`](https://github.com/brijimerson/catalog-demo)  application.  Both non-secure TCP and secure TCP egress scenarios are demonstrated.
 
 This demonstration assumes that you have a Kubernetes cluster in AWS and are going to install RabbitMQ as a standalone EC2 instance in the same VPC.  Other environments should be similar to set up.
 
@@ -211,20 +211,20 @@ helm install istio-egress manifests/charts/gateways/istio-egress/ -n istio-syste
 
 ## Application Installation
 
-There is a separate folder called [`ecommerce-microservices`](https://github.com/aspenmesh/se-workshop-demo-library/ecommerce-microservices) that contains a demonstration of microservices on Aspen Mesh.  One of the microservices, `payment-service`, requires an egress gateway to make an API call to Stripe, a credit card processing API. Two of the microservices, `payment-service` and `payment-history` communicate through the RabbitMQ server as well.
+There is a separate repository called [`catalog-demo`](https://github.com/brianjimerson/catalog-demo) that contains a demonstration of microservices on Aspen Mesh.  One of the microservices, `payment-backend`, requires an egress gateway to make an API call to Stripe, a credit card processing API. Two of the microservices, `payment-backend` and `payment-history` communicate through the RabbitMQ server as well.
 
-First, install all of the services without any egress setup.  For more details on configuration see the [`README`](https://github.com/brijimerson/ecommerce-microservices/README.md) in the `ecommerce-microservices` repository.
+First, install all of the services without any egress setup.  For more details on configuration see the [`README`](https://github.com/brijimerson/catalog-demo/README.md) in the `catalog-demo` repository.
 
 ```
-cd ecommerce-microservices/deploy
+cd catalog-demo/deploy
 ./install-all.sh
 ./deploy-all.sh
 ```
 
-You also need to patch the `payment-history` and `payment-service` deployments to override the default RabbitMQ connection settings.  Edit `patch-payment-service.yaml`and `patch-payment-history.yaml `, update the host, username, port, and SSL settings, and then apply the patches:
+You also need to patch the `payment-backend` and `payment-history` deployments to override the default RabbitMQ connection settings.  Edit `patch-payment-backend.yaml`and `patch-payment-history.yaml `, update the host, username, port, and SSL settings, and then apply the patches:
 
 ```
-kubectl patch deployment payment-service -n ecommerce --patch "$(cat patch-payment-service.yaml)"
+kubectl patch deployment payment-backend -n ecommerce --patch "$(cat patch-payment-backend.yaml)"
 kubectl patch deployment payment-history -n ecommerce --patch "$(cat patch-payment-history.yaml)"
 ```
  
@@ -295,4 +295,23 @@ kubectl logs -l istio=egressgateway -n istio-system
 ```
 
 You should see entries for https calls to api.stripe.com, which means that all external calls are being routed through the egress gateway.
+
+## Egress Policies
+
+If you want to control egress by only allowing a service account or namespace, you can do so with an `AuthorizationPolicy`.  There is a file called [`payment-policy.yaml`](./payment-policy.yaml) that restricts egress traffic to the RabbitMQ server and the Stripe API to just a service account named `payment` in the `catalog-demo` namespace; all other egress traffic is denied.  To enable this policy, apply the file:
+
+```
+kubectl apply -f payment-policy.yaml
+```
+
+Traffic should still be allowed to the RabbitMQ server and the Stripe API.  To test that it's working properly, change the `spec.rules.from.source.principals` value to `cluster.local/ns/catalog-demo/sa/not-allowed`, re-apply the file, and view the `EgressGateway` logs.  You should see an RBAC denied error:
+
+```
+kubectl apply -f payment-policy.yaml
+
+kubectl logs -l istio=egressgateway -n istio-system
+
+2021-07-21T12:52:27.610814Z	debug	envoy rbac	checking connection: requestedServerName: ip-172-20-42-195.us-east-2.compute.internal, sourceIP: 100.96.3.38:58426, directRemoteIP: 100.96.3.38:58426,remoteIP: 100.96.3.38:58426, localAddress: 100.96.3.27:5672, ssl: uriSanPeerCertificate: spiffe://cluster.local/ns/catalog-demo/sa/not-allowed, dnsSanPeerCertificate: not-allowed.catalog-demo.svc.cluster.local, subjectPeerCertificate: , dynamicMetadata: 
+2021-07-21T12:52:27.610841Z	debug	envoy rbac	enforced denied, matched policy none
+```
 

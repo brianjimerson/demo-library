@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: rabbitmq-egressgateway
-  namespace: ecommerce
+  namespace: catalog-demo
 spec:
   selector:
     istio: egressgateway
@@ -20,7 +20,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
   name: egressgateway-for-rabbitmq
-  namespace: ecommerce
+  namespace: catalog-demo
 spec:
   host: istio-egressgateway.istio-system.svc.cluster.local
   subsets:
@@ -34,7 +34,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: direct-rabbitmq-through-egress-gateway
-  namespace: ecommerce
+  namespace: catalog-demo
 spec:
   hosts:
   - ip-192-168-75-212.us-east-2.compute.internal
@@ -66,7 +66,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
   name: rabbitmq
-  namespace: ecommerce
+  namespace: catalog-demo
 spec:
   hosts:
   - ip-192-168-75-212.us-east-2.compute.internal
