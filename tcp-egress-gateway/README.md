@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This repository demonstrates how use the Aspen Mesh Egress Gateway for TCP and TCP/TLS traffic to external services.  This demonstration uses an external RabbitMQ server as the message bus for the [`catalog-demo`](https://github.com/brijimerson/catalog-demo)  application.  Both non-secure TCP and secure TCP egress scenarios are demonstrated.
+This repository demonstrates how use the Aspen Mesh Egress Gateway for TCP and TCP/TLS traffic to external services.  This demonstration uses an external RabbitMQ server as the message bus for the [`catalog-demo`](https://github.com/brianjimerson/catalog-demo)  application.  Both non-secure TCP and secure TCP egress scenarios are demonstrated.
 
 This demonstration assumes that you have a Kubernetes cluster in AWS and are going to install RabbitMQ as a standalone EC2 instance in the same VPC.  Other environments should be similar to set up.
 
