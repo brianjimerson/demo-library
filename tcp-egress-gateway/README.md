@@ -10,7 +10,7 @@ This demonstration assumes that you have a Kubernetes cluster in AWS and are goi
 
 ### EC2 Setup
 
-First, create an EC2 instance based on Ubuntu 20.04.  A t2.xlarge instance type with a 60GB volume was used for this demonstration.  Also, make sure you assign a public IP address to the instance so that you can access the RabbitMQ Management Console.  If you don't, you'll have forward ports for the console.  The security group for the instance should have the following inbound rules:
+First, create an EC2 instance based on Ubuntu 20.04.  A t2.xlarge instance type with a 60GB volume was used for this demonstration.  Also, make sure you assign a public IP address to the instance so that you can SSH into the instance and access the RabbitMQ Management Console. The security group for the instance should have the following inbound rules:
 
  * 5671/TCP from at least the subnet for your Kubernetes cluster (secure RabbitMQ protocol)
  * 5672/TCP from at least the subnet for your Kubernetes cluster (non-secure RabbitMQ protocol)
@@ -46,6 +46,7 @@ By default the guest user can only access the Management Console from `localhost
 ```
 sudo rabbitmqctl add_user admin <password>
 sudo rabbitmqctl set_user_tags admin administrator
+sudo rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
 ```
 
 You should be able to access the Management Console at `http://<ec2-instance-public-address>:15672` with the admin user created.
