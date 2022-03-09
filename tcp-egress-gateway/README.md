@@ -212,9 +212,9 @@ helm install istio-egress manifests/charts/gateways/istio-egress/ -n istio-syste
 
 ## Application Installation
 
-There is a separate repository called [`catalog-demo`](https://github.com/brianjimerson/catalog-demo) that contains a demonstration of microservices on Aspen Mesh.  One of the microservices, `payment-backend`, requires an egress gateway to make an API call to Stripe, a credit card processing API. Two of the microservices, `payment-backend` and `payment-history` communicate through the RabbitMQ server as well.
+There is a separate repository called [`catalog-demo`](https://github.com/brianjimerson/catalog-demo) that contains a demonstration of microservices on Aspen Mesh.  One of the microservices, `payments`, requires an egress gateway to make an API call to Stripe, a credit card processing API. Two of the microservices, `payments` and `payment-history` communicate through the RabbitMQ server as well.
 
-First, install all of the services without any egress setup.  For more details on configuration see the [`README`](https://github.com/brijimerson/catalog-demo/README.md) in the `catalog-demo` repository.
+First, install all of the services without any egress setup.  For more details on configuration see the [`README`](https://github.com/brianjimerson/catalog-demo/README.md) in the `catalog-demo` repository.
 
 ```
 cd catalog-demo/deploy
@@ -222,11 +222,11 @@ cd catalog-demo/deploy
 ./deploy-all.sh
 ```
 
-You also need to patch the `payment-backend` and `payment-history` deployments to override the default RabbitMQ connection settings.  Edit `patch-payment-backend.yaml`and `patch-payment-history.yaml `, update the host, username, port, and SSL settings, and then apply the patches:
+You also need to patch the `payments` and `payment-history` deployments to override the default RabbitMQ connection settings.  Edit `payments-patch.yaml`and `payment-history-patch.yaml `, update the host, username, port, and SSL settings, and then apply the patches:
 
 ```
-kubectl patch deployment payment-backend -n ecommerce --patch "$(cat patch-payment-backend.yaml)"
-kubectl patch deployment payment-history -n ecommerce --patch "$(cat patch-payment-history.yaml)"
+kubectl patch deployment payments -n catalog-demo --patch "$(cat payments-patch.yaml)"
+kubectl patch deployment payment-history -n catalog-demo --patch "$(cat payment-history-patch.yaml)"
 ```
  
 If you view the logs in the `payment-history` pod, you should see an error when it tries to establish a connection to the RabbitMQ server.
@@ -252,7 +252,7 @@ The final step is to configure the egress gateway for RabbitMQ and the Stripe AP
 If you didn't use the aspenmesh-values.yaml file for the Aspen Mesh installation, you will need patch the `istio-egressgateway` to add ports `5671` and `5672` to the listener (the aspenmesh-values.yaml in this repository has these ports too):
 
 ```
-kubectl patch svc istio-egressgateway -n istio-system --patch "$(cat patch-egress-gateway.yaml)"
+kubectl patch svc istio-egressgateway -n istio-system --patch "$(cat egress-gateway-patch.yaml)"
 ```
 
 Then, depending on whether you're using a secure or non-secure connection to RabbitMQ, apply the `ServiceEntry`, `Gateway`, `DestinationRule`, and `VirtualService` objects for the Istio Egress Gateway:

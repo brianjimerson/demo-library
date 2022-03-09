@@ -3,10 +3,10 @@ spec:
   template:
     spec:
       containers:
-      - name: payment-service
+      - name: payments
         env:
         - name: SPRING_RABBITMQ_HOST
-          value: "ip-192-168-75-212.us-east-2.compute.internal"
+          value: "ip-192-168-57-87.us-east-2.compute.internal"
         - name: SPRING_RABBITMQ_PORT
           # Non-secure connection
           # value: "5672"

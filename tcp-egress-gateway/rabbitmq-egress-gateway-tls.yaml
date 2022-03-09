@@ -12,7 +12,7 @@ spec:
       name: rabbitmq-tls
       protocol: TLS
     hosts:
-    - ip-192-168-75-212.us-east-2.compute.internal
+    -  ip-192-168-57-87.us-east-2.compute.internal
     tls:
       mode: ISTIO_MUTUAL
 ---
@@ -28,7 +28,7 @@ spec:
     trafficPolicy:
       tls:
         mode: ISTIO_MUTUAL
-        sni: ip-192-168-75-212.us-east-2.compute.internal
+        sni:  ip-192-168-57-87.us-east-2.compute.internal
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -37,7 +37,7 @@ metadata:
   namespace: catalog-demo
 spec:
   hosts:
-  - ip-192-168-75-212.us-east-2.compute.internal
+  -  ip-192-168-57-87.us-east-2.compute.internal
   gateways:
   - mesh
   - rabbitmq-egressgateway
@@ -58,7 +58,7 @@ spec:
       port: 5671
     route:
     - destination:
-        host: ip-192-168-75-212.us-east-2.compute.internal
+        host:  ip-192-168-57-87.us-east-2.compute.internal
         port:
           number: 5671
 ---
@@ -69,7 +69,7 @@ metadata:
   namespace: catalog-demo
 spec:
   hosts:
-  - ip-192-168-75-212.us-east-2.compute.internal
+  -  ip-192-168-57-87.us-east-2.compute.internal
   ports:
   - number: 5671
     name: rabbitmq-tls
